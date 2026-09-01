@@ -40,14 +40,6 @@ const CONTENT = {
       linkText: "",
     },
     {
-      date: "24/03/26",
-      venue: "Chat Orange Session",
-      city: "Marseille",
-      note: "Entrée gratuite sur invitation",
-      link: "",
-      linkText: "",
-    },
-    {
       date: "25/03/26",
       venue: "Café Julien",
       city: "Marseille",
