@@ -131,39 +131,67 @@ WebP, remplacer `src`/`srcset` de l'image concernée dans `index.html`.
 Le site est publié automatiquement par GitHub Pages à chaque `git push` sur
 `main`. Aucune commande de build.
 
-### Basculer le domaine jononj.love vers GitHub Pages
+### Brancher le domaine jononj.love (Namecheap)
 
-Aujourd'hui `jononj.love` et `www.jononj.love` pointent encore sur Webflow
-(`CNAME → cdn.webflow.com`). Une fois le site vérifié sur l'URL github.io :
+Le domaine est chez **Namecheap**, avec les DNS de Namecheap
+(`dns1.registrar-servers.com`). Aujourd'hui il pointe encore sur Webflow.
 
-**a. Déclarer le domaine dans le dépôt**
+> ### ⚠️ NE PAS TOUCHER AUX ENREGISTREMENTS E-MAIL
+>
+> Une adresse e-mail Zoho tourne sur ce domaine. **Ces 5 enregistrements doivent
+> rester exactement tels quels** — les supprimer coupe la réception des mails :
+>
+> | Type | Host              | Valeur                            |
+> |------|-------------------|-----------------------------------|
+> | MX   | `@`               | `mx.zoho.eu` (priorité 10)        |
+> | MX   | `@`               | `mx2.zoho.eu` (priorité 20)       |
+> | MX   | `@`               | `mx3.zoho.eu` (priorité 50)       |
+> | TXT  | `@`               | `v=spf1 include:zohomail.eu ~all` |
+> | TXT  | `zoho._domainkey` | `v=DKIM1; k=rsa; p=…`             |
+>
+> On ne modifie **que** les deux enregistrements du site web ci-dessous.
+
+**a. Côté GitHub** — *Settings → Pages → Custom domain* → saisir `jononj.love`
+→ *Save*. GitHub affiche un avertissement « domain not properly configured » :
+c'est normal, le DNS n'a pas encore changé. Cette étape crée toute seule le
+fichier `CNAME` dans le dépôt.
+
+**b. Côté Namecheap** — *Domain List → Manage (jononj.love) → onglet Advanced
+DNS → Host Records*.
+
+Supprimer les deux enregistrements qui pointent sur `cdn.webflow.com`
+(un pour `@`, un pour `www`), puis ajouter :
+
+| Type         | Host  | Valeur                | TTL       |
+|--------------|-------|-----------------------|-----------|
+| A Record     | `@`   | `185.199.108.153`     | Automatic |
+| A Record     | `@`   | `185.199.109.153`     | Automatic |
+| A Record     | `@`   | `185.199.110.153`     | Automatic |
+| A Record     | `@`   | `185.199.111.153`     | Automatic |
+| CNAME Record | `www` | `<pseudo>.github.io.` | Automatic |
+
+en remplaçant `<pseudo>` par le nom d'utilisateur GitHub du propriétaire du
+dépôt. Namecheap ajoute parfois un « URL Redirect Record » ou un CNAME
+`parkingpage.namecheap.com` : les supprimer aussi.
+
+**c. Attendre.** Le TTL actuel est de 5 minutes ; comptez de 10 minutes à
+quelques heures. Vérifier depuis un terminal :
 
 ```bash
-echo "www.jononj.love" > CNAME && git add CNAME && git commit -m "Domaine personnalisé" && git push
+dig +short jononj.love          # doit renvoyer les quatre 185.199.x.153
+dig +short www.jononj.love      # doit renvoyer <pseudo>.github.io
 ```
 
-**b. Chez le registrar du domaine**, remplacer les enregistrements Webflow par :
+**d. Repasser sur GitHub** — l'avertissement disparaît, puis le certificat
+HTTPS est émis (~15 min). Cocher alors **Enforce HTTPS**.
 
-| Type  | Nom   | Valeur                  |
-|-------|-------|-------------------------|
-| A     | `@`   | `185.199.108.153`       |
-| A     | `@`   | `185.199.109.153`       |
-| A     | `@`   | `185.199.110.153`       |
-| A     | `@`   | `185.199.111.153`       |
-| CNAME | `www` | `<compte>.github.io.`   |
+`www.jononj.love` redirige automatiquement vers `jononj.love`. Pour l'inverse,
+mettre `www.jononj.love` dans le champ *Custom domain* — et penser à changer
+`<link rel="canonical">` et `og:url` dans `index.html`.
 
-**c. Dans le dépôt** : *Settings → Pages → Custom domain* → `www.jononj.love`,
-puis cocher **Enforce HTTPS** (attendre que le certificat soit émis, ~15 min).
-
-La propagation DNS prend de quelques minutes à 24 h. Le site Webflow reste en
-ligne pendant ce temps : ne résilier l'abonnement qu'une fois la bascule
-confirmée.
-
-> Le site garde `www.jononj.love` comme adresse principale, comme aujourd'hui.
-> Pour préférer `jononj.love` sans `www`, mettre `jononj.love` dans le fichier
-> `CNAME` — GitHub redirige alors le `www` vers le domaine nu.
-
----
+> **Ne résilier Webflow qu'après vérification.** Le site Webflow reste en ligne
+> tant que le DNS n'a pas basculé : il sert de filet. Et **exporter d'abord les
+> adresses du formulaire** (voir §4).
 
 ## 7. Ce qui change par rapport au site Webflow
 
