@@ -1,0 +1,481 @@
+/* =============================================================================
+   JON ONJ — jononj.love
+   -----------------------------------------------------------------------------
+   Reconstruction du site Webflow en HTML/CSS/JS statique.
+
+   IMPORTANT — la taille de police de base est 14px (héritée du design Webflow
+   d'origine). Toutes les valeurs ci-dessous sont exprimées en pixels réels,
+   déjà converties, pour éviter toute ambiguïté.
+
+   Structure du fichier :
+     1. Polices
+     2. Variables de couleur
+     3. Base / reset
+     4. Navigation
+     5. Sections TEKIBAMA + FOCHAIN
+     6. Section TOUR (concerts)
+     7. Section CONTACT (pied de page)
+     8. Formulaire newsletter
+     9. Responsive  — tablette (<= 1200px), petit écran (<= 899px), mobile (<= 479px)
+    10. Accessibilité / mouvement réduit / impression
+============================================================================= */
+
+
+/* == 1. POLICES ============================================================ */
+
+@font-face {
+  font-family: "Druk Wide";
+  src: url("assets/font/DrukWide-Bold.woff2") format("woff2");
+  font-weight: 400 700;         /* une seule graisse réelle : évite le faux-gras */
+  font-style: normal;
+  font-display: swap;
+}
+
+
+/* == 2. VARIABLES ========================================================== */
+
+:root {
+  --bg:       #f8cd03;          /* jaune */
+  --skin:     #f884ab;          /* rose */
+  --redish:   #f12b3e;          /* rouge */
+  --whitish:  #f1f0e9;          /* blanc cassé */
+  --blackish: #050402;          /* noir */
+  --bluish:   #7084c5;          /* bleu */
+
+  --display: "Druk Wide", Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif;
+  --mono:    Inconsolata, ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  --nav-h: 61px;                /* hauteur de la nav sur grand écran */
+
+  /* Le fond granuleux : une tuile de 384px répétée, au lieu d'un JPEG de 3,9 Mo.
+     background-size la réduit à 192px pour retrouver le grain fin d'origine. */
+  --grain: url("assets/img/grain.webp");
+}
+
+
+/* == 3. BASE / RESET ======================================================= */
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html {
+  height: 100%;
+  background-color: var(--bg);  /* évite un rebond blanc en haut/bas sur mobile */
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+body {
+  min-height: 100%;
+  margin: 0;
+  color: #333;
+  background-color: transparent;
+  font-family: Arial, sans-serif;
+  font-size: 14px;              /* base du design — ne pas changer sans tout revoir */
+  line-height: 20px;
+  -webkit-font-smoothing: antialiased;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+  vertical-align: middle;
+  display: inline-block;
+  border: 0;
+}
+
+a { color: inherit; background-color: transparent; }
+
+h1, h2, h3 { margin-bottom: 10px; font-weight: bold; }
+
+p { margin: 0 0 10px; }
+
+ul { margin: 0; padding: 0; list-style: none; }
+
+button, input { color: inherit; font: inherit; margin: 0; }
+
+.visually-hidden {
+  position: absolute;
+  width: 1px; height: 1px;
+  margin: -1px; padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.skip-link {
+  position: absolute;
+  left: -9999px;
+  z-index: 10000;
+  padding: 12px 18px;
+  background: var(--blackish);
+  color: var(--bg);
+  font-family: var(--mono);
+  text-decoration: none;
+}
+.skip-link:focus { left: 8px; top: 8px; }
+
+
+/* == 4. NAVIGATION ========================================================= */
+
+.nav {
+  position: fixed;
+  inset: 0 0 auto 0;
+  z-index: 9999;
+  display: flex;
+  flex-flow: row wrap;          /* wrap : indispensable sous ~500px */
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 14px 0;
+}
+
+.btn {
+  display: inline-block;
+  padding: 9px 15px;
+  border: 0;
+  background-color: transparent;
+  color: var(--blackish);
+  font-family: var(--display);
+  line-height: 100%;
+  text-decoration: none;
+  cursor: pointer;
+  transition: transform .2s, color .2s;
+}
+
+.btn-nav {
+  /* 29.4px sur grand écran, puis réduction fluide pour ne jamais déborder.
+     Les 4 libellés mesurent ~900px de large à 29.4px : sous ~1010px de large,
+     ils doivent rétrécir — c'est exactement ce que le Webflow d'origine
+     ne faisait pas, d'où le débordement horizontal sur tablette. */
+  font-size: clamp(14px, 2.85vw, 29.4px);
+}
+.btn-nav:hover        { color: var(--skin); transform: scale(.9); }
+.btn-nav:active       { filter: drop-shadow(0 2px 5px rgba(0,0,0,.2)); transform: scale(.94); }
+.btn-nav[aria-current]        { color: var(--bluish); }
+
+
+/* == 5. SECTIONS TEKIBAMA + FOCHAIN ======================================== */
+
+.section { width: 100%; }
+
+.section.teki {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: clamp(20px, 4.7vw, 67.2px);
+  min-height: 100vh;
+  min-height: 100svh;
+  padding-inline: 14px;
+  background-color: var(--bg);
+  background-image: var(--grain);
+  background-size: 192px;
+  background-repeat: repeat;
+  color: var(--skin);
+  -webkit-text-stroke: 1.4px var(--redish);
+}
+
+/* FOCHAIN : même structure, fond clair et sans grain. */
+.section.teki.fochain {
+  background-color: #f7f7f7;
+  background-image: none;
+}
+
+.cover {
+  width: 700px;
+  max-width: 100%;
+  min-width: 0;                 /* autorise l'image à rétrécir dans le flex */
+}
+
+.btn-album {
+  font-size: 35px;
+  font-weight: 400;
+  -webkit-text-stroke-width: 0;
+  white-space: nowrap;
+}
+.btn-album:hover  { color: var(--skin); transform: scale(1.2); }
+.btn-album:active { filter: drop-shadow(0 2px 5px rgba(0,0,0,.21)); transform: scale(.9); }
+
+
+/* == 6. SECTION TOUR (concerts) ============================================ */
+
+.section.concerts {
+  background-color: var(--skin);
+  scroll-margin-top: var(--nav-h);   /* le texte ne passe plus sous la nav */
+}
+
+.tour-layout {
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: space-around;
+  align-items: center;
+  gap: clamp(24px, 4.9vw, 70px);
+  padding: 28px;
+}
+
+.tour-poster {
+  max-width: 38%;
+  min-width: 260px;
+  flex: 0 1 auto;
+}
+
+.tour-list {
+  display: flex;
+  flex-flow: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  flex: 0 1 auto;
+  min-width: 0;
+}
+
+.tour-line {
+  margin: 0 0 10px;
+  color: var(--blackish);
+  font-family: var(--mono);
+  font-size: 1.3em;             /* 18.2px sur grand écran */
+  line-height: 100%;
+}
+.tour-line a { color: inherit; }
+
+.video-row {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+
+.video {
+  position: relative;
+  width: 100%;
+  padding-bottom: 56.17021276595745%;   /* ratio d'origine du bloc Webflow */
+}
+.video iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
+
+/* == 7. SECTION CONTACT (pied de page) ===================================== */
+
+.section.contact {
+  position: relative;
+  background-color: var(--bg);
+  background-image: var(--grain);
+  background-size: 192px;
+  background-repeat: repeat;
+  scroll-margin-top: var(--nav-h);
+}
+
+.footer-inner {
+  display: flex;
+  flex-flow: row wrap;
+  align-items: center;
+  gap: 31px;
+  padding: 42px 14px 112px;
+  border-top: 2.8px solid var(--blackish);
+}
+
+.footer-art { width: auto; max-width: 296.8px; height: auto; }
+
+.footer-cols {
+  display: flex;
+  flex-flow: row wrap;
+}
+
+.footer-col {
+  display: flex;
+  flex-flow: column;
+  padding: 28px;
+  color: var(--bluish);
+  font-family: var(--display);
+}
+
+.h3 {
+  margin: 20px 0 10px;
+  color: var(--bluish);
+  font-family: var(--display);
+  font-size: 24px;
+  line-height: 30px;
+}
+
+.footer-list { display: flex; flex-flow: column; }
+
+.footer-link {
+  display: block;             /* comme les liens-flex de Webflow : le lien occupe
+                                 toute la colonne, donc text-align le centre */
+  color: var(--blackish);
+  font-family: var(--mono);
+  line-height: 20px;
+  text-align: center;
+  text-decoration: none;
+}
+.footer-link:hover { color: var(--skin); }
+
+.credit {
+  position: absolute;
+  right: 1%;
+  bottom: 3%;
+  color: var(--blackish);
+  font-family: var(--mono);
+  text-align: center;
+  text-decoration: none;
+  transition: transform .35s cubic-bezier(.68, -.55, .265, 1.55), color .2s;
+}
+.credit:hover { color: var(--bluish); transform: skew(7deg, -9deg); }
+
+
+/* == 8. FORMULAIRE NEWSLETTER ============================================== */
+
+.form-block {
+  display: flex;
+  flex-flow: column;
+  justify-content: flex-start;
+  margin-bottom: 15px;      /* .w-form d'origine */
+}
+
+.form {
+  display: flex;
+  flex-flow: column;
+  gap: 14px;
+  padding: 28px;
+}
+
+.form label {
+  display: block;
+  margin-bottom: 5px;
+  font-family: var(--mono);
+  font-weight: 700;
+}
+
+.text-field {
+  display: block;
+  width: 20em;                  /* 280px */
+  max-width: 100%;
+  height: 38px;
+  padding: 8px 12px;
+  border: 1px solid var(--bluish);
+  border-radius: 6px;
+  background-color: #fff;
+  color: #333;
+  margin-bottom: 10px;      /* .w-input d'origine */
+  font-size: 14px;
+  line-height: 1.42857;
+}
+.text-field:focus { outline: 2px solid var(--blackish); outline-offset: 1px; }
+
+.submit-button {
+  align-self: flex-start;
+  padding: 9px 15px;
+  border: 2px solid var(--skin);
+  border-radius: 6px;
+  background-color: transparent;
+  color: var(--skin);
+  font-family: var(--mono);
+  font-size: 18px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform .2s, background-color .2s, color .2s;
+}
+.submit-button:hover  { background-color: var(--skin); color: var(--blackish); }
+.submit-button:active { transform: scale(.95); }
+.submit-button[disabled] { opacity: .6; cursor: default; }
+
+.form-status {
+  margin: 0 28px 28px;
+  max-width: 320px;
+  font-family: var(--mono);
+  font-size: 16px;
+  color: var(--blackish);
+}
+.form-status.is-error { color: var(--redish); }
+
+/* Piège à robots. Reste dans le flux (hauteur nulle) pour occuper la même
+   place que le div vide du captcha Webflow : l'espacement reste identique. */
+.hp { height: 0; overflow: hidden; }
+
+
+/* == 9. RESPONSIVE ========================================================= */
+
+/* --- 9a. Tablette et petit portable : 480px – 1200px ----------------------
+   Cette tranche n'existait pas dans le Webflow d'origine : la page débordait
+   horizontalement de ~300px à 820px de large. Ces règles la comblent. */
+@media (max-width: 1200px) {
+  .btn-album { font-size: clamp(24px, 2.9vw, 35px); }
+  .tour-line { font-size: clamp(15px, 1.55vw, 18.2px); }
+  .footer-col { padding: 20px; }
+}
+
+/* --- 9b. Empilement : sous 900px ----------------------------------------- */
+@media (max-width: 899px) {
+  .section.teki {
+    flex-flow: row wrap;
+    justify-content: space-around;
+    gap: 0;
+    padding-block: calc(var(--nav-h) + 10px) 20px;
+  }
+  .cover     { width: 100%; order: 0; }
+  .btn-album { order: 1; }
+
+  .tour-layout   { flex-flow: column; gap: 70px; padding-inline: 14px; }
+  .tour-poster   { max-width: 100%; min-width: 0; }
+  .tour-list     { flex: 1 1 auto; width: 100%; }
+
+  .footer-inner  { flex-flow: column; align-items: flex-start; }
+  .footer-cols   { width: 100%; }
+  .footer-col    { padding: 14px 28px; }
+  .form          { padding: 14px 28px 28px; }
+}
+
+/* --- 9c. Mobile : 479px et moins ----------------------------------------
+   Valeurs reprises telles quelles du Webflow d'origine, converties en px. */
+@media (max-width: 479px) {
+  .section.teki {
+    gap: 0;
+    min-height: 100svh;
+    padding-block: 0;
+    padding-inline: 0;        /* aucun padding latéral dans l'original */
+  }
+  .cover     { margin-top: 70px; padding: 0 0 14px 7px; }
+  .btn       { font-size: 14px; }
+  .btn-album { order: 1; font-size: 25.2px; }
+
+  .tour-layout { flex-flow: column; padding-inline: 14px; }
+  .tour-poster { max-width: 102%; }
+  .tour-list   { font-size: 12px; line-height: 100%; }
+  .tour-line   { font-size: 1.3em; }   /* 15.6px, relatif au 12px ci-dessus */
+
+  .footer-inner { flex-flow: column; align-items: center; }  /* l'illustration
+                                   est centrée dans l'original sur mobile */
+  .footer-art   { max-width: 177.8px; }
+  .footer-cols  { flex-flow: column; }
+  .footer-col   { padding: 7px 28px 7px 42px; }
+  .footer-link  { text-align: left; }
+  .form         { padding: 28px 28px 28px 42px; }
+  .form-status  { margin-inline: 42px; }
+  .credit       { right: 0; left: 0; bottom: 2%; }
+}
+
+
+/* == 10. ACCESSIBILITÉ ===================================================== */
+
+:focus-visible {
+  outline: 3px solid var(--blackish);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
+  }
+  .btn:hover, .credit:hover { transform: none; }
+}
+
+@media print {
+  .nav, .video-row, .form-block { display: none; }
+  .section { min-height: 0; page-break-inside: avoid; }
+}

@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>Jon Onj</title>
+<link rel="canonical" href="https://www.jononj.love/">
+
+<!-- Aperçu quand on partage le lien (WhatsApp, Instagram, Facebook, iMessage…).
+     Aucun texte inventé ici : uniquement le nom et l'illustration du site. -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Jon Onj">
+<meta property="og:locale" content="fr_FR">
+<meta property="og:url" content="https://www.jononj.love/">
+<meta property="og:title" content="Jon Onj">
+<meta property="og:image" content="https://www.jononj.love/assets/og-image.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+
+<meta name="theme-color" content="#f8cd03">
+<link rel="icon" href="assets/favicon.ico" sizes="any">
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preload" as="font" type="font/woff2" href="assets/font/DrukWide-Bold.woff2" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inconsolata:wght@400;700&display=swap">
+<link rel="stylesheet" href="styles.css">
+
+<script src="content.js"></script>
+</head>
+
+<body>
+
+<nav class="nav">
+  <a class="btn btn-nav" href="#tekibama">TEKIBAMA</a>
+  <a class="btn btn-nav" href="#concerts">TOUR</a>
+  <a class="btn btn-nav" href="#fochain">FOCHAIN</a>
+  <a class="btn btn-nav" href="#contact">CONTACT</a>
+</nav>
+
+<main>
+
+  <!-- ===================== 1. TEKIBAMA ===================== -->
+  <section id="tekibama" class="section teki">
+    <a class="btn btn-album" data-link="albums.tekibama.buy" target="_blank" rel="noopener">BUY</a>
+    <img class="cover"
+         src="assets/img/hero-tekibama-1080.webp"
+         srcset="assets/img/hero-tekibama-500.webp   500w,
+                 assets/img/hero-tekibama-800.webp   800w,
+                 assets/img/hero-tekibama-1080.webp 1080w,
+                 assets/img/hero-tekibama-1511.webp 1511w"
+         sizes="(max-width: 740px) 100vw, 700px"
+         width="1511" height="1573"
+         fetchpriority="high" decoding="async"
+         alt="Jon Onj Tekibama Cover">
+    <a class="btn btn-album" data-link="albums.tekibama.listen" target="_blank" rel="noopener">LISTEN</a>
+  </section>
+
+  <!-- ===================== 2. TOUR ===================== -->
+  <section id="concerts" class="section concerts">
+    <div class="tour-layout">
+      <img class="tour-poster" id="tour-poster"
+           src="assets/img/tour-poster-800.webp"
+           srcset="assets/img/tour-poster-500.webp   500w,
+                   assets/img/tour-poster-800.webp   800w,
+                   assets/img/tour-poster-1200.webp 1200w"
+           sizes="(max-width: 899px) 92vw, 38vw"
+           width="1200" height="1200" loading="lazy" decoding="async"
+           alt="">
+      <div class="tour-list" id="tour-list"></div>
+    </div>
+    <div class="video-row">
+      <div class="video" id="video"></div>
+    </div>
+  </section>
+
+  <!-- ===================== 3. FOCHAIN ===================== -->
+  <section id="fochain" class="section teki fochain">
+    <a class="btn btn-album" data-link="albums.fochain.buy" target="_blank" rel="noopener">BUY</a>
+    <img class="cover"
+         src="assets/img/fochain-cover-800.webp"
+         srcset="assets/img/fochain-cover-500.webp   500w,
+                 assets/img/fochain-cover-800.webp   800w,
+                 assets/img/fochain-cover-1200.webp 1200w"
+         sizes="(max-width: 740px) 100vw, 700px"
+         width="1200" height="1200" loading="lazy" decoding="async"
+         alt="Jon Onj Fochain cover">
+    <a class="btn btn-album" data-link="albums.fochain.listen" target="_blank" rel="noopener">LISTEN</a>
+  </section>
+
+</main>
+
+<!-- ===================== 4. CONTACT ===================== -->
+<footer id="contact" class="section contact">
+
+  <div class="footer-inner">
+
+    <img class="footer-art"
+         src="assets/img/voiture-600.webp"
+         srcset="assets/img/voiture-300.webp 300w,
+                 assets/img/voiture-600.webp 600w"
+         sizes="297px"
+         width="600" height="600" loading="lazy" decoding="async"
+         alt="Jon Onj on a car">
+
+    <div class="footer-cols">
+
+      <div class="footer-col">
+        <h3 class="h3">CONTACT</h3>
+        <ul class="footer-list" id="contact-list"></ul>
+      </div>
+
+      <div class="footer-col">
+        <h3 class="h3">FOLLOW</h3>
+        <ul class="footer-list" id="follow-list"></ul>
+      </div>
+
+      <div class="form-block">
+        <form class="form" id="newsletter" novalidate>
+          <h3 class="h3">NEWSLETTER</h3>
+          <div>
+            <label for="email">Email Address</label>
+            <input class="text-field" id="email" name="EMAIL" type="email"
+                   maxlength="256" autocomplete="email" required
+                   aria-describedby="form-status">
+          </div>
+          <button class="submit-button" type="submit">Envoyer</button>
+          <!-- Piège à robots : laissé vide par les humains, rempli par les bots. -->
+          <div class="hp" aria-hidden="true">
+            <input type="text" name="b_honeypot" tabindex="-1" value="" autocomplete="off">
+          </div>
+        </form>
+        <p class="form-status" id="form-status" role="status" aria-live="polite" hidden></p>
+      </div>
+
+    </div>
+  </div>
+
+  <a class="credit" id="credit" href="#">website + design by<br>SoopaWeb</a>
+</footer>
+
+<script src="main.js"></script>
+</body>
+</html>
