@@ -133,32 +133,24 @@ const CONTENT = {
   ],
 
   /* ---------------------------------------------------------------------------
-     7. NEWSLETTER — MAILCHIMP
+     7. NEWSLETTER — où arrivent les inscriptions
      ---------------------------------------------------------------------------
-     Où trouver ces valeurs (une seule fois, puis on n'y touche plus) :
+     Chaque inscription ajoute une ligne dans une feuille Google Sheets, et
+     envoie un e-mail à Jon (facultatif). Tout se passe dans son compte Google :
+     aucun service tiers, aucune limite, aucune clé secrète.
 
-       Mailchimp → Audience → Signup forms → Embedded forms → Continue
-       Dans le code affiché, repère la ligne qui commence par  <form action="
-       Elle ressemble à :
+     "endpoint" est l'URL du script Google — voir README.md, section 4.
+     Elle ressemble à :
+        https://script.google.com/macros/s/AKfycb.../exec
 
-         https://love.us21.list-manage.com/subscribe/post?u=a1b2c3d4e5f6&amp;id=7g8h9i0j&amp;f_id=00abc
+     Ce n'est PAS un mot de passe : cette adresse ne permet que d'ajouter une
+     ligne, rien d'autre. Elle peut figurer sans risque dans le code de la page.
 
-       Recopie les morceaux ci-dessous :
-         dc     = ce qui suit le point après ton nom de compte  → "us21"
-         u      = la valeur après  u=                            → "a1b2c3d4e5f6"
-         id     = la valeur après  id=                           → "7g8h9i0j"
-         f_id   = la valeur après  f_id=  (peut être vide)       → "00abc"
-         account= ton nom de compte avant le point               → "love"
-
-     Tant que ces champs sont vides, le formulaire bascule automatiquement
-     sur un simple e-mail — le site n'est jamais cassé.
+     Tant qu'elle est vide, le formulaire bascule sur un simple e-mail :
+     le site n'est jamais cassé.
   --------------------------------------------------------------------------- */
-  mailchimp: {
-    account: "",                      // ex: "jononj"
-    dc:      "",                      // ex: "us21"
-    u:       "",                      // ex: "a1b2c3d4e5f6"
-    id:      "",                      // ex: "7g8h9i0j"
-    f_id:    "",                      // ex: "00abc"  (facultatif)
+  newsletter: {
+    endpoint:      "",
     fallbackEmail: "jononjmusic@gmail.com",
   },
 
@@ -168,7 +160,7 @@ const CONTENT = {
   newsletterText: {
     heading: "NEWSLETTER",
     label:   "Email Address",
-    submit:  "Envoyer",
+    submit:  "M'inscrire",
     sending: "Please wait...",
     success: "Merci d'avoir souscrit \u00e0 ma newsletter!<br>Je t'envoie de mes nouvelles tr\u00e8s vite!<br>\u2764\ufe0f",
     error:   "oulala, petit probl\u00e8me!",

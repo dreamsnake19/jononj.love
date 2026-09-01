@@ -10,7 +10,7 @@
      3. Insère la vidéo YouTube
      4. Affiche les colonnes CONTACT et FOLLOW
      5. Surligne en bleu l'entrée de menu de la section visible
-     6. Envoie le formulaire newsletter à Mailchimp
+     6. Enregistre les inscriptions newsletter dans la feuille Google
 ============================================================================= */
 
 (function () {
@@ -216,29 +216,14 @@
   }
 
 
-  /* == 8. FORMULAIRE NEWSLETTER (Mailchimp) ==============================
-     GitHub Pages ne sert que des fichiers : il n'y a pas de serveur pour
-     recevoir le formulaire. On passe donc directement par Mailchimp, via
-     son endpoint public "post-json" (technique JSONP officielle des
-     formulaires embarqués Mailchimp).
+  /* == 8. FORMULAIRE NEWSLETTER ==========================================
+     GitHub Pages ne sert que des fichiers : aucun serveur ne peut recevoir le
+     formulaire. On envoie donc l'adresse à un petit script Google Apps Script
+     qui tourne dans le compte de Jon (voir tools/newsletter-google-script.gs).
+     Il ajoute une ligne dans sa feuille de calcul et lui envoie un e-mail.
 
-     Si Mailchimp n'est pas encore configuré dans content.js, on bascule
-     sur un simple e-mail : le formulaire n'est jamais cassé. */
-
-  function mailchimpConfigured() {
-    var m = CONTENT.mailchimp || {};
-    return Boolean(m.account && m.dc && m.u && m.id);
-  }
-
-  function mailchimpUrl(email) {
-    var m = CONTENT.mailchimp;
-    var url = "https://" + m.account + "." + m.dc + ".list-manage.com/subscribe/post-json"
-            + "?u=" + encodeURIComponent(m.u)
-            + "&id=" + encodeURIComponent(m.id);
-    if (m.f_id) url += "&f_id=" + encodeURIComponent(m.f_id);
-    url += "&EMAIL=" + encodeURIComponent(email);
-    return url;
-  }
+     Aucune clé, aucun jeton : l'URL du script ne permet que d'ajouter une
+     ligne. Rien à cacher, donc rien à protéger. */
 
   function initForm() {
     var form   = $("#newsletter");
@@ -247,7 +232,11 @@
     var button = form && form.querySelector(".submit-button");
     if (!form || !status || !input || !button) return;
 
-    var txt = CONTENT.newsletterText || {};
+    var txt  = CONTENT.newsletterText || {};
+    var conf = CONTENT.newsletter || {};
+
+    // content.js fait foi pour le libellé du bouton.
+    if (txt.submit) button.textContent = txt.submit;
     var idleLabel = button.textContent;
 
     function say(html, isError) {
@@ -256,11 +245,49 @@
       status.hidden = false;
     }
 
+    function finish(ok) {
+      button.disabled = false;
+      button.textContent = idleLabel;
+      if (ok) { say(txt.success || ""); form.reset(); }
+      else    { say(txt.error || "", true); }
+    }
+
+    /* L'en-tête text/plain est volontaire : il fait de la requête une
+       « simple request », donc sans pré-vol OPTIONS — que les scripts Google
+       ne savent pas traiter. Le script lit quand même du JSON à l'arrivée. */
+    function send(url, payload) {
+      var opts = {
+        method: "POST",
+        headers: { "Content-Type": "text/plain;charset=utf-8" },
+        body: JSON.stringify(payload),
+      };
+      return fetch(url, opts)
+        .then(function (r) {
+          return r.json().then(
+            function (d) { return d.ok !== false; },
+            function ()  { return r.ok; }          // réponse non-JSON : on se fie au statut
+          );
+        })
+        .catch(function () {
+          /* Si le navigateur refuse de nous laisser lire la réponse, on renvoie
+             en "no-cors" : la donnée arrive bien côté Google, on ne peut
+             simplement pas lire le retour. Mieux vaut enregistrer l'inscription
+             que la perdre — le script ignore les doublons, donc ce second envoi
+             est sans risque. */
+          return fetch(url, {
+            method: "POST",
+            mode: "no-cors",
+            headers: { "Content-Type": "text/plain;charset=utf-8" },
+            body: JSON.stringify(payload),
+          }).then(function () { return true; });
+        });
+    }
+
     form.addEventListener("submit", function (e) {
       e.preventDefault();
 
       // Champ piège rempli => c'est un robot, on ne fait rien.
-      var hp = form.querySelector('input[name="b_honeypot"]');
+      var hp = form.querySelector('input[name="_honey"]');
       if (hp && hp.value) return;
 
       var email = input.value.trim();
@@ -270,11 +297,10 @@
         return;
       }
 
-      // Mailchimp pas encore branché : on ouvre un e-mail pré-rempli.
-      if (!mailchimpConfigured()) {
-        var to = (CONTENT.mailchimp && CONTENT.mailchimp.fallbackEmail) || "";
-        if (to) {
-          window.location.href = "mailto:" + to
+      // Pas encore branché : on ouvre un e-mail pré-rempli.
+      if (!conf.endpoint) {
+        if (conf.fallbackEmail) {
+          window.location.href = "mailto:" + conf.fallbackEmail
             + "?subject=" + encodeURIComponent("Newsletter")
             + "&body=" + encodeURIComponent(email);
         }
@@ -284,36 +310,9 @@
       button.disabled = true;
       button.textContent = txt.sending || idleLabel;
 
-      var cb = "mcb_" + Date.now();
-      var script = document.createElement("script");
-      var done = false;
-
-      function finish(ok) {
-        if (done) return;
-        done = true;
-        button.disabled = false;
-        button.textContent = idleLabel;
-        try { delete window[cb]; } catch (err) { window[cb] = undefined; }
-        if (script.parentNode) script.parentNode.removeChild(script);
-
-        if (ok) {
-          say(txt.success || "");
-          form.reset();
-        } else {
-          say(txt.error || "", true);
-        }
-      }
-
-      window[cb] = function (data) {
-        finish(data && data.result === "success");
-      };
-
-      script.src = mailchimpUrl(email) + "&c=" + cb;
-      script.onerror = function () { finish(false); };
-      document.body.appendChild(script);
-
-      // Filet de sécurité si Mailchimp ne répond pas.
-      setTimeout(function () { finish(false); }, 10000);
+      send(conf.endpoint, { email: email, source: location.hostname })
+        .then(finish)
+        .catch(function () { finish(false); });
     });
   }
 

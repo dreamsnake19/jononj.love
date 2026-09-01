@@ -68,6 +68,8 @@ assets/
   originals/    fichiers sources non compressés — À CONSERVER
   og-image.jpg  vignette affichée quand on partage le lien
 404.html        redirige vers l'accueil
+tools/
+  newsletter-google-script.gs   à coller dans Google Apps Script (voir §4)
 ```
 
 `assets/originals/` contient les fichiers d'origine récupérés depuis Webflow.
@@ -76,42 +78,85 @@ plus récupérables ailleurs.
 
 ---
 
-## 4. Newsletter (Mailchimp) — à finir de brancher
+## 4. Newsletter — inscriptions dans une feuille Google
 
-Le formulaire est prêt mais **pas encore relié**. Tant que les identifiants sont
-vides, il bascule sur un simple e-mail : le site n'est jamais cassé.
+Chaque inscription **ajoute une ligne dans une feuille Google Sheets** de Jon,
+et lui envoie un e-mail (facultatif). Tout tourne dans son propre compte Google.
 
-Pour l'activer, remplir la section `mailchimp` de `content.js` :
+|                        |                                            |
+|------------------------|--------------------------------------------|
+| Où sont les inscrits   | dans son Drive, feuille privée             |
+| Service tiers          | aucun                                      |
+| Limite de contacts     | aucune                                     |
+| Coût                   | gratuit                                    |
+| Clé / mot de passe     | aucun — rien à cacher dans le code du site |
 
-> Mailchimp → **Audience** → **Signup forms** → **Embedded forms** → *Continue*
->
-> Dans le code affiché, repérer la ligne `<form action="…">` :
->
-> ```
-> https://jononj.us21.list-manage.com/subscribe/post?u=a1b2c3&id=d4e5f6&f_id=00abc
->          ^^^^^^ ^^^^                                  ^^^^^^    ^^^^^^      ^^^^^
->          account  dc                                    u         id        f_id
-> ```
+Tant que ce n'est pas configuré, le formulaire ouvre un simple e-mail :
+le site n'est jamais cassé.
+
+### Installation — une seule fois, ~10 minutes
+
+**1.** Ouvrir la feuille Google Sheets qui servira de liste. **Une feuille déjà
+existante convient** : le script y ajoute un nouvel onglet `Inscriptions` sans
+toucher au reste.
+
+**2.** Menu **Extensions → Apps Script**. Une fenêtre de code s'ouvre.
+
+**3.** Effacer le contenu par défaut (`function myFunction() {}`) et coller à la
+place tout le fichier [`tools/newsletter-google-script.gs`](tools/newsletter-google-script.gs)
+de ce dépôt. Enregistrer (icône disquette).
+
+En haut du script, deux réglages :
 
 ```js
-mailchimp: {
-  account: "jononj",
-  dc:      "us21",
-  u:       "a1b2c3",
-  id:      "d4e5f6",
-  f_id:    "00abc",
+const NOTIFY_EMAIL = "jononjmusic@gmail.com";  // "" pour ne pas recevoir d'e-mail
+const SHEET_NAME   = "Inscriptions";           // nom de l'onglet
+```
+
+**4.** Bouton **Déployer → Nouveau déploiement** → roue dentée → **Application
+Web**, puis :
+
+| Champ                | Valeur                          |
+|----------------------|---------------------------------|
+| Description          | `newsletter jononj.love`        |
+| Exécuter en tant que | **Moi**                         |
+| Qui a accès          | **Tout le monde** ← obligatoire |
+
+→ **Déployer**. Google demande une autorisation la première fois : *Autoriser
+l'accès* → choisir son compte → *Paramètres avancés* → *Accéder à …* → *Autoriser*.
+L'avertissement « application non validée » est normal, c'est son propre script.
+
+**5.** Copier l'**URL de l'application Web** affichée (elle finit par `/exec`) et
+la coller dans `content.js` :
+
+```js
+newsletter: {
+  endpoint:      "https://script.google.com/macros/s/AKfycb…/exec",
   fallbackEmail: "jononjmusic@gmail.com",
 },
 ```
 
-L'inscription se fait alors sans quitter la page, avec les mêmes messages de
-confirmation qu'avant.
+**6.** Vérifier : ouvrir l'URL `/exec` dans un navigateur — elle doit afficher
+`{"ok":true,"service":"jononj.love newsletter"}`. Puis s'inscrire une fois
+depuis le site : une ligne doit apparaître dans la feuille.
 
-> ⚠️ **Avant de résilier Webflow** : exporter les adresses déjà collectées.
-> Webflow → *Site settings* → **Forms** → export CSV. Elles sont perdues à la
-> résiliation.
+### Si le script est modifié plus tard
 
----
+Google garde l'ancienne version active tant qu'on ne redéploie pas :
+**Déployer → Gérer les déploiements → crayon ✏️ → Version : Nouvelle version →
+Déployer.** L'URL, elle, ne change pas.
+
+### Pourquoi pas de clé secrète ?
+
+L'URL `/exec` n'est pas un mot de passe : elle ne permet que d'ajouter une ligne.
+Elle peut donc figurer en clair dans le code de la page. C'est justement pour
+cette raison que cette solution a été retenue — **un site statique ne peut
+héberger aucun secret**. Les *GitHub Secrets* n'existent qu'au moment d'un build,
+et tout ce qu'un build injecte dans le JavaScript finit lisible par les
+visiteurs. Ici il n'y a rien à protéger.
+
+Le formulaire est protégé par un champ piège invisible, une validation de
+l'adresse, et le script ignore les doublons.
 
 ## 5. Ajouter ou remplacer une image
 
