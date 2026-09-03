@@ -32,47 +32,38 @@ const CONTENT = {
   --------------------------------------------------------------------------- */
   tour: [
     {
-      date: "23/03/26",
-      venue: "La Murisserie",
-      city: "Marseille",
-      note: "Entrée payantes aux dés",
+      date: "25/09/26",
+      venue: "Badassery",
+      city: "Lisbon",
+      note: "First time in Portugal!",
+      link: "https://shotgun.live/fr/events/r-b-neo-soul-showcase-curated-by-oca-collective",
+      linkText: "",
+    },
+    {
+      date: "24/10/26",
+      venue: "Espace Jules Verne",
+      city: "Livry Gargan",
+      note: "20 ans après le premier concert de ma vie à Livry Gargan! ",
+      link: "https://www.helloasso.com/associations/cap-culture-et-loisirs/evenements/concert-jon-onj",
+      linkText: "",
+    },
+    {
+      date: "03/11/26",
+      venue: "La Bellevilloise",
+      city: "Paris",
+      note: "Informations à venir",
       link: "",
       linkText: "",
     },
     {
-      date: "25/03/26",
-      venue: "Café Julien",
-      city: "Marseille",
-      note: "",
-      link: "https://espace-julien.com/agenda/carte-blanche-jon-onj",
-      linkText: "Entrée gratuite sur prévente ici",
-    },
-    {
-      date: "26/03/26",
-      venue: "Lieu Secret",
-      city: "Marseille",
-      note: "Informations sur mes réseaux sociaux",
-      link: "",
+      date: "26/11/26",
+      venue: "Le Bijou",
+      city: "Toulouse",
+      note: "Première fois à Toulouse!",
+      link: "https://www.le-bijou.net/events/julia-pertuy-jon-onj",
       linkText: "",
     },
-    {
-      date: "27/03/26",
-      venue: "Le Bistrot Joseph",
-      city: "Marseille",
-      note: "Entrée gratuite",
-      link: "",
-      linkText: "",
-    },
-    {
-      date: "28/03/26",
-      venue: "La Meson",
-      city: "Marseille",
-      note: "",
-      link: "https://www.helloasso.com/associations/la-meson/evenements/jon-onj-x-blasta-collective",
-      linkText: "Préventes",
-    },
-  ],
-
+   
   /* ---------------------------------------------------------------------------
      2. AFFICHE DE TOURNÉE (image à gauche des dates)
      ---------------------------------------------------------------------------
