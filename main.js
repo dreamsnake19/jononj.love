@@ -40,8 +40,15 @@
     box.textContent = "";
 
     CONTENT.tour.forEach(function (t) {
-      var p = document.createElement("p");
+      // Lien sans texte dédié : toute la ligne devient cliquable.
+      var wholeLineIsLink = !!(t.link && !t.linkText);
+      var p = document.createElement(wholeLineIsLink ? "a" : "p");
       p.className = "tour-line";
+      if (wholeLineIsLink) {
+        p.href = t.link;
+        p.target = "_blank";
+        p.rel = "noopener";
+      }
 
       // "23/03/26 La Murisserie (Marseille) - "
       var head = t.date + " " + t.venue;

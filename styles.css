@@ -235,6 +235,8 @@ button, input { color: inherit; font: inherit; margin: 0; }
   line-height: 100%;
 }
 .tour-line a { color: inherit; }
+a.tour-line { display: block; text-decoration: none; }
+a.tour-line:hover { text-decoration: underline; }
 
 .video-row {
   display: flex;
