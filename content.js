@@ -63,7 +63,8 @@ const CONTENT = {
       link: "https://www.le-bijou.net/events/julia-pertuy-jon-onj",
       linkText: "",
     },
-   
+  ],
+
   /* ---------------------------------------------------------------------------
      2. AFFICHE DE TOURNÉE (image à gauche des dates)
      ---------------------------------------------------------------------------
@@ -72,7 +73,7 @@ const CONTENT = {
      Une image carrée d'environ 1200x1200 px est idéale.
   --------------------------------------------------------------------------- */
   tourPoster: {
-    file: "tour-poster",              // sans extension — voir README
+    file: "tour-été-automne-26-POST-CANCER", // sans extension — voir README
     alt: "",                            // vide dans le site d'origine
   },
 
