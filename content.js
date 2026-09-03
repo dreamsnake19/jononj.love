@@ -150,7 +150,7 @@ const CONTENT = {
      le site n'est jamais cassé.
   --------------------------------------------------------------------------- */
   newsletter: {
-    endpoint:      "",
+    endpoint:      "https://script.google.com/macros/s/AKfycbxbXKocwcK2Nr_OVOKvIJWw-yk4QShtZkBx0yo0gO2RZTLMRdJpISITQNDHY3BWl2msXw/exec",
     fallbackEmail: "jononjmusic@gmail.com",
   },
 
