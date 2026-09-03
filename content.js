@@ -37,7 +37,7 @@ const CONTENT = {
       city: "Lisbon",
       note: "First time in Portugal!",
       link: "https://shotgun.live/fr/events/r-b-neo-soul-showcase-curated-by-oca-collective",
-      linkText: "",
+      linkText: "25/09/26 Badassery (Lisbon) - First time in Portugal!",
     },
     {
       date: "24/10/26",
@@ -45,7 +45,7 @@ const CONTENT = {
       city: "Livry Gargan",
       note: "20 ans après le premier concert de ma vie à Livry Gargan! ",
       link: "https://www.helloasso.com/associations/cap-culture-et-loisirs/evenements/concert-jon-onj",
-      linkText: "",
+      linkText: "24/10/26 Espace Jules Verne (Livry Gargan) - 20 ans après le premier concert de ma vie à Livry Gargan! ",
     },
     {
       date: "03/11/26",
@@ -61,7 +61,7 @@ const CONTENT = {
       city: "Toulouse",
       note: "Première fois à Toulouse!",
       link: "https://www.le-bijou.net/events/julia-pertuy-jon-onj",
-      linkText: "",
+      linkText: "26/11/26 Le Bijou (Toulouse) - Première fois à Toulouse!",
     },
   ],
 
